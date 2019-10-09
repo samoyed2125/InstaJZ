@@ -43,6 +43,7 @@ class Post(models.Model):
         blank=True,
         null=True
     )
+
     posted_on = models.DateTimeField(auto_now_add=True,editable=False,)
 
     def get_like_count(self):

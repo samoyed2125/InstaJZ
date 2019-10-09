@@ -15,11 +15,17 @@ class PostsView(ListView):
     template_name = 'index.html'
 
     def get_queryset(self):
-        current_user = self.request.user
-        following = set()
-        for conn in UserConnection.objects.filter(creator=current_user).select_related('following'):
-            following.add(conn.following)
-        return Post.objects.filter(author__in=following)
+        if not self.request.user.is_authenticated:
+            return []
+        try:
+            current_user = self.request.user
+            following = set()
+            for conn in UserConnection.objects.filter(creator=current_user).select_related('following'):
+                following.add(conn.following)
+            return Post.objects.filter(author__in=following)
+        except Exception as exp:
+            print(exp)
+            return []
 
 class PostDetailView(DetailView):
     model = Post
@@ -46,6 +52,10 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     template_name = 'post_create.html'
     fields = ['title', 'image']
     login_url = 'login'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super(PostCreateView, self).form_valid(form)
 
 class PostUpdateView(UpdateView):
     model = Post
