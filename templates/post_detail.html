@@ -19,6 +19,9 @@
             <img class="card__main-image" src="/{{object.image}}"> {% comment %} width='1000', height='1000'> {% endcomment %}
         </div>
 
+        <a href="{% url 'post_delete' object.pk %}">Delete Post</a>
+        <a href="{% url 'post_update' object.pk %}">Update Post</a>
+
         <div class="comments-portion">
             <div class="likes-timestamp-row">
                 <div class="likes">
